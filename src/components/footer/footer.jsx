@@ -1,9 +1,18 @@
 import React from 'react';
+
 import TaskFilter from '../task-filter';
 
 import './footer.css';
 
-function Footer({ data = [], setFilter = () => {}, deleteDone = () => {} }) {
+function Footer({
+  data = [],
+  setFilter = () => {
+    console.log('Функция не передана');
+  },
+  deleteDone = () => {
+    console.log('Функция не передана');
+  },
+}) {
   const doneCounter = data.filter((el) => !el.done).length;
 
   return (

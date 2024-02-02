@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import './new-task-form.css';
 
-function NewTaskForm({ onItemAdded = () => {} }) {
+function NewTaskForm({ onItemAdded }) {
   const [label, setLabel] = useState('');
 
   const onLabelChange = (e) => {
