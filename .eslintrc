@@ -29,9 +29,10 @@
     ],
     "rules": {
         "indent": [
-            "error",
+            "warn",
             2
         ],
+        "no-mixed-spaces-and-tabs": "off",
         "prettier/prettier": "error",
         "linebreak-style": [
             0,
@@ -78,6 +79,9 @@
         ]
     },
     "settings": {
+        "react": {
+            "version": "detect" // или указать версию React, например, "16.14.0"
+        },
         "import/resolver": {
             "node": {
                 "extensions": [
