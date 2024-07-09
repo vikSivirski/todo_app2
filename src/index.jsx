@@ -17,48 +17,38 @@ function App() {
       done: false,
       id: 1,
       createdTime: new Date(),
+      timer: 600, // default 10 minutes in seconds
     },
     {
       text: 'Editing task',
       done: false,
       id: 2,
       createdTime: new Date(),
+      timer: 600, // default 10 minutes in seconds
     },
     {
       text: 'Active task',
       done: false,
       id: 3,
       createdTime: new Date(),
+      timer: 600, // default 10 minutes in seconds
     },
   ]);
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTodoData((prevData) =>
-        prevData.map((item) => ({
-          ...item,
-        }))
-      );
-    }, 30000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const [filter, setFilter] = useState('all');
-
-  const createTodoItem = (text) => ({
+  const createTodoItem = (text, timer) => ({
     text,
     done: false,
     id: Math.random().toString(36).slice(2),
     createdTime: new Date(),
+    timer,
   });
+
+  const addItem = (text, timer) => {
+    setTodoData((prevData) => [...prevData, createTodoItem(text, timer)]);
+  };
 
   const deleteItem = (id) => {
     setTodoData((prevData) => prevData.filter((el) => el.id !== id));
-  };
-
-  const addItem = (text) => {
-    setTodoData((prevData) => [...prevData, createTodoItem(text)]);
   };
 
   const toggleDone = (id) => {
@@ -80,14 +70,28 @@ function App() {
     }
   };
 
+  const [filter, setFilter] = useState('all');
   const filteredData = filterData(todoData, filter);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTodoData((prevData) =>
+        prevData.map((item) => ({
+          ...item,
+          timer: item.timer > 0 ? item.timer - 1 : 0,
+        }))
+      );
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <React.StrictMode>
       <section className="todoapp">
         <NewTaskForm onItemAdded={addItem} />
         <section className="main">
-          <Tasks todos={filteredData} onDeleted={deleteItem} onToggleDone={toggleDone} currentTime={new Date()} />
+          <Tasks todos={filteredData} onDeleted={deleteItem} onToggleDone={toggleDone} />
           <Footer data={filteredData} setFilter={setFilter} deleteDone={deleteDoneTask} />
         </section>
       </section>
