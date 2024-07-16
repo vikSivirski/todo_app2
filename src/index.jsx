@@ -17,23 +17,43 @@ function App() {
       done: false,
       id: 1,
       createdTime: new Date(),
-      timer: 600, // default 10 minutes in seconds
+      timer: 600,
     },
     {
       text: 'Editing task',
       done: false,
       id: 2,
       createdTime: new Date(),
-      timer: 600, // default 10 minutes in seconds
+      timer: 600,
     },
     {
       text: 'Active task',
       done: false,
       id: 3,
       createdTime: new Date(),
-      timer: 600, // default 10 minutes in seconds
+      timer: 600,
     },
   ]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTodoData((prevData) =>
+        prevData.map((item) => {
+          if (item.timer > 0) {
+            return {
+              ...item,
+              timer: item.timer - 1,
+            };
+          }
+          return item;
+        })
+      );
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const [filter, setFilter] = useState('all');
 
   const createTodoItem = (text, timer) => ({
     text,
@@ -43,61 +63,49 @@ function App() {
     timer,
   });
 
-  const addItem = (text, timer) => {
-    setTodoData((prevData) => [...prevData, createTodoItem(text, timer)]);
-  };
-
   const deleteItem = (id) => {
     setTodoData((prevData) => prevData.filter((el) => el.id !== id));
   };
 
-  const toggleDone = (id) => {
-    setTodoData((prevData) => prevData.map((item) => (item.id === id ? { ...item, done: !item.done } : item)));
+  const addItem = (text, timer) => {
+    setTodoData((prevData) => [...prevData, createTodoItem(text, timer)]);
   };
 
-  const deleteDoneTask = () => {
-    setTodoData((prevData) => prevData.filter((el) => !el.done));
+  const onToggleDone = (id) => {
+    setTodoData((prevData) => {
+      const newData = [...prevData];
+      const idx = newData.findIndex((el) => el.id === id);
+      newData[idx] = { ...newData[idx], done: !newData[idx].done };
+      return newData;
+    });
   };
 
-  const filterData = (data, currentFilter) => {
-    switch (currentFilter) {
+  const filterItems = (items, filter) => {
+    switch (filter) {
+      case 'all':
+        return items;
       case 'active':
-        return data.filter((el) => !el.done);
+        return items.filter((item) => !item.done);
       case 'completed':
-        return data.filter((el) => el.done);
+        return items.filter((item) => item.done);
       default:
-        return data;
+        return items;
     }
   };
 
-  const [filter, setFilter] = useState('all');
-  const filteredData = filterData(todoData, filter);
+  const onFilterChange = (filter) => {
+    setFilter(filter);
+  };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setTodoData((prevData) =>
-        prevData.map((item) => ({
-          ...item,
-          timer: item.timer > 0 ? item.timer - 1 : 0,
-        }))
-      );
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+  const visibleItems = filterItems(todoData, filter);
 
   return (
-    <React.StrictMode>
-      <section className="todoapp">
-        <NewTaskForm onItemAdded={addItem} />
-        <section className="main">
-          <Tasks todos={filteredData} onDeleted={deleteItem} onToggleDone={toggleDone} />
-          <Footer data={filteredData} setFilter={setFilter} deleteDone={deleteDoneTask} />
-        </section>
-      </section>
-    </React.StrictMode>
+    <section className="todoapp">
+      <NewTaskForm onItemAdded={addItem} />
+      <Tasks todos={visibleItems} onDeleted={deleteItem} onToggleDone={onToggleDone} />
+      <Footer toDo={todoData.length} filter={filter} onFilterChange={onFilterChange} />
+    </section>
   );
 }
 
-export default App;
 root.render(<App />);

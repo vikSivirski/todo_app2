@@ -27,6 +27,7 @@ function Tasks({
         onToggleDone={() => onToggleDone(item.id)}
         done={item.done}
         createdTime={distanceToNow}
+        timer={item.timer} // Передаем значение таймера в компонент TodoItem
       />
     );
   });

@@ -3,21 +3,21 @@ import PropTypes from 'prop-types';
 
 import './task.css';
 
-function TodoItem({ text, onDeleted, onToggleDone, done, createdTime }) {
-  const [elapsedTime, setElapsedTime] = useState(600); // Дефолтное значение в секундах (10 минут = 600 секунд)
+function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer }) {
+  const [elapsedTime, setElapsedTime] = useState(timer); // Используем значение таймера из props
   const [timerOn, setTimerOn] = useState(false);
-  let timer;
+  let timerInterval;
 
   useEffect(() => {
     if (timerOn && elapsedTime > 0) {
-      timer = setInterval(() => {
+      timerInterval = setInterval(() => {
         setElapsedTime((prevTime) => prevTime - 1);
       }, 1000);
     } else {
-      clearInterval(timer);
+      clearInterval(timerInterval);
     }
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timerInterval);
   }, [timerOn, elapsedTime]);
 
   const toggleTimer = () => {
@@ -61,6 +61,7 @@ TodoItem.propTypes = {
   onToggleDone: PropTypes.func.isRequired,
   done: PropTypes.bool,
   createdTime: PropTypes.string,
+  timer: PropTypes.number.isRequired, // Добавлен пропс для таймера
 };
 
 export default TodoItem;
