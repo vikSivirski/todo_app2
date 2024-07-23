@@ -18,6 +18,8 @@ function App() {
       id: 1,
       createdTime: new Date(),
       timer: 600,
+      initialTime: 600,
+      timerOn: false,
     },
     {
       text: 'Editing task',
@@ -25,6 +27,8 @@ function App() {
       id: 2,
       createdTime: new Date(),
       timer: 600,
+      initialTime: 600,
+      timerOn: false,
     },
     {
       text: 'Active task',
@@ -32,6 +36,8 @@ function App() {
       id: 3,
       createdTime: new Date(),
       timer: 600,
+      initialTime: 600,
+      timerOn: false,
     },
   ]);
 
@@ -39,7 +45,7 @@ function App() {
     const intervalId = setInterval(() => {
       setTodoData((prevData) =>
         prevData.map((item) => {
-          if (item.timer > 0) {
+          if (item.timerOn && item.timer > 0) {
             return {
               ...item,
               timer: item.timer - 1,
@@ -61,6 +67,8 @@ function App() {
     id: Math.random().toString(36).slice(2),
     createdTime: new Date(),
     timer,
+    initialTime: timer,
+    timerOn: false,
   });
 
   const deleteItem = (id) => {
@@ -80,30 +88,52 @@ function App() {
     });
   };
 
-  const filterItems = (items, filter) => {
-    switch (filter) {
-      case 'all':
-        return items;
+  const deleteDoneTask = () => {
+    setTodoData((prevData) => prevData.filter((el) => !el.done));
+  };
+
+  const toggleTimer = (id) => {
+    setTodoData((prevData) => {
+      const newData = [...prevData];
+      const idx = newData.findIndex((el) => el.id === id);
+      newData[idx] = { ...newData[idx], timerOn: !newData[idx].timerOn };
+      return newData;
+    });
+  };
+
+  const resetTimer = (id) => {
+    setTodoData((prevData) => {
+      const newData = [...prevData];
+      const idx = newData.findIndex((el) => el.id === id);
+      newData[idx] = { ...newData[idx], timer: newData[idx].initialTime, timerOn: false };
+      return newData;
+    });
+  };
+
+  const filterData = (data, currentFilter) => {
+    switch (currentFilter) {
       case 'active':
-        return items.filter((item) => !item.done);
+        return data.filter((el) => !el.done);
       case 'completed':
-        return items.filter((item) => item.done);
+        return data.filter((el) => el.done);
       default:
-        return items;
+        return data;
     }
   };
 
-  const onFilterChange = (filter) => {
-    setFilter(filter);
-  };
-
-  const visibleItems = filterItems(todoData, filter);
+  const filteredData = filterData(todoData, filter);
 
   return (
     <section className="todoapp">
       <NewTaskForm onItemAdded={addItem} />
-      <Tasks todos={visibleItems} onDeleted={deleteItem} onToggleDone={onToggleDone} />
-      <Footer toDo={todoData.length} filter={filter} onFilterChange={onFilterChange} />
+      <Tasks
+        todos={filteredData}
+        onDeleted={deleteItem}
+        onToggleDone={onToggleDone}
+        onToggleTimer={toggleTimer}
+        onResetTimer={resetTimer}
+      />
+      <Footer data={filteredData} setFilter={setFilter} deleteDone={deleteDoneTask} />
     </section>
   );
 }

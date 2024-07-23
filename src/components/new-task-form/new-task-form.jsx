@@ -35,7 +35,7 @@ function NewTaskForm({ onItemAdded }) {
   return (
     <header className="header">
       <h1>todos</h1>
-      <form onSubmit={onSubmit}>
+      <form className="new-todo-form" onSubmit={onSubmit}>
         <input className="new-todo" placeholder="What needs to be done?" onChange={onLabelChange} value={label} />
         <input className="new-todo-form__timer" placeholder="Min" onChange={onMinutesChange} value={minutes} />
         <input className="new-todo-form__timer" placeholder="Sec" onChange={onSecondsChange} value={seconds} />

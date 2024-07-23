@@ -13,6 +13,12 @@ function Tasks({
   onToggleDone = () => {
     console.log('Функция не передана');
   },
+  onToggleTimer = () => {
+    console.log('Функция не передана');
+  },
+  onResetTimer = () => {
+    console.log('Функция не передана');
+  },
 }) {
   const items = todos.map((item) => {
     const distanceToNow = formatDistanceToNow(item.createdTime, {
@@ -27,7 +33,10 @@ function Tasks({
         onToggleDone={() => onToggleDone(item.id)}
         done={item.done}
         createdTime={distanceToNow}
-        timer={item.timer} // Передаем значение таймера в компонент TodoItem
+        timer={item.timer}
+        timerOn={item.timerOn}
+        onToggleTimer={() => onToggleTimer(item.id)}
+        onResetTimer={() => onResetTimer(item.id)}
       />
     );
   });

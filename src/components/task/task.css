@@ -1,3 +1,7 @@
+.flex {
+  display: flex;
+}
+
 .todo-list li:last-child {
   border-bottom: none;
 }
@@ -59,7 +63,7 @@
 }
 
 .todo-list li label .created {
-  font-size: 13px;
+  font-size: 10px;
   color: gray;
 }
 
@@ -109,6 +113,37 @@
 
 .todo-list li .icon-edit:after {
   content: '✎';
+}
+
+.timer-block {
+  position: relative;
+  padding-left: 25px;
+}
+
+.timer {
+  font-size: 13px;
+}
+
+.todo-list li .icon-pause,
+.todo-list li .icon-play {
+  position: absolute;
+  top: 29px;
+  left: 0;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.todo-list li .icon-play {
+  font-size: 15px;
+}
+
+.icon-pause:after {
+  content: '⏸';
+}
+
+.icon-play:after {
+  content: '▶';
 }
 
 .todo-list li .edit {
