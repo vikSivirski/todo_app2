@@ -60,6 +60,7 @@ function App() {
   }, []);
 
   const [filter, setFilter] = useState('all');
+  const [editingTaskId, setEditingTaskId] = useState(null);
 
   const createTodoItem = (text, timer) => ({
     text,
@@ -80,16 +81,23 @@ function App() {
   };
 
   const onToggleDone = (id) => {
-    setTodoData((prevData) => {
-      const newData = [...prevData];
-      const idx = newData.findIndex((el) => el.id === id);
-      newData[idx] = { ...newData[idx], done: !newData[idx].done };
-      return newData;
-    });
+    setTodoData((prevData) => prevData.map((item) => (item.id === id ? { ...item, done: !item.done } : item)));
   };
 
   const deleteDoneTask = () => {
     setTodoData((prevData) => prevData.filter((el) => !el.done));
+  };
+
+  const onEditTask = (id) => {
+    setEditingTaskId(id);
+  };
+
+  const onFinishEditing = () => {
+    setEditingTaskId(null);
+  };
+
+  const editTaskText = (id, newText) => {
+    setTodoData((prevData) => prevData.map((item) => (item.id === id ? { ...item, text: newText } : item)));
   };
 
   const toggleTimer = (id) => {
@@ -132,6 +140,10 @@ function App() {
         onToggleDone={onToggleDone}
         onToggleTimer={toggleTimer}
         onResetTimer={resetTimer}
+        onEditTask={onEditTask} // Передаем функцию для редактирования
+        onTextChange={editTaskText} // Передаем функцию изменения текста
+        editingTaskId={editingTaskId} // Передаем ID редактируемой задачи
+        onFinishEditing={onFinishEditing} // Передаем функцию для завершения редактирования
       />
       <Footer data={filteredData} setFilter={setFilter} deleteDone={deleteDoneTask} />
     </section>

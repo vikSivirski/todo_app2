@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import './task.css';
 
 function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, timerOn, onToggleTimer, onResetTimer }) {
-  const [elapsedTime, setElapsedTime] = useState(timer); // Устанавливаем таймер из пропсов
+  const [elapsedTime, setElapsedTime] = useState(timer);
 
   useEffect(() => {
-    setElapsedTime(timer); // Устанавливаем начальное значение таймера при изменении пропсов
+    setElapsedTime(timer);
   }, [timer]);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
         setElapsedTime((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(timerInterval);
-            onResetTimer(); // Вызов функции сброса таймера
+            onResetTimer();
             return 0;
           }
           return prevTime - 1;
@@ -31,8 +31,14 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
     return () => clearInterval(timerInterval);
   }, [timerOn, elapsedTime, onResetTimer]);
 
-  const toggleTimer = () => {
+  const toggleTimer = (e) => {
+    e.stopPropagation();
     onToggleTimer();
+  };
+
+  const toggleTaskDone = (e) => {
+    e.stopPropagation();
+    onToggleDone();
   };
 
   const formatTime = (seconds) => {
@@ -44,12 +50,11 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
   return (
     <li className={done ? 'completed' : 'active'}>
       <div className="view">
-        <input className="toggle" type="checkbox" onClick={onToggleDone} />
-        <label>
+        <label onClick={toggleTaskDone}>
           <span className="description">{text}</span>
           <div className="flex timer-block">
             <button className={`icon ${timerOn ? 'icon-pause' : 'icon-play'}`} onClick={toggleTimer} />
-            <span className="timer">{formatTime(timer)}</span>
+            <span className="timer">{formatTime(elapsedTime)}</span>
           </div>
           <span className="created">created {createdTime}</span>
         </label>
