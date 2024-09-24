@@ -28,10 +28,10 @@
         "import"
     ],
     "rules": {
-        "indent": [
-            "warn",
-            2
-        ],
+        // "indent": [
+        //     "warn",
+        //     2
+        // ],
         "no-mixed-spaces-and-tabs": "off",
         "prettier/prettier": "error",
         "linebreak-style": [

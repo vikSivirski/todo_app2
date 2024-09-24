@@ -37,10 +37,6 @@ function Tasks({
         timerOn={item.timerOn}
         onToggleTimer={() => onToggleTimer(item.id)}
         onResetTimer={() => onResetTimer(item.id)}
-        onEditTask={() => onEditTask(item.id)}
-        isEditing={editingTaskId === item.id}
-        onTextChange={(newText) => onTextChange(item.id, newText)}
-        onFinishEditing={onFinishEditing}
       />
     );
   });
