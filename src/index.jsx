@@ -20,6 +20,7 @@ function App() {
       timer: 600,
       initialTime: 600,
       timerOn: false,
+      isEditing: false,
     },
     {
       text: 'Editing task',
@@ -29,6 +30,7 @@ function App() {
       timer: 600,
       initialTime: 600,
       timerOn: false,
+      isEditing: false,
     },
     {
       text: 'Active task',
@@ -38,6 +40,7 @@ function App() {
       timer: 600,
       initialTime: 600,
       timerOn: false,
+      isEditing: false,
     },
   ]);
 
@@ -49,6 +52,11 @@ function App() {
             return {
               ...item,
               timer: item.timer - 1,
+            };
+          } else if (item.timer === 0 && item.timerOn) {
+            return {
+              ...item,
+              timerOn: false,
             };
           }
           return item;
@@ -69,6 +77,7 @@ function App() {
     timer,
     initialTime: timer,
     timerOn: false,
+    isEditing: false,
   });
 
   const deleteItem = (id) => {
@@ -91,7 +100,12 @@ function App() {
     setTodoData((prevData) => {
       const newData = [...prevData];
       const idx = newData.findIndex((el) => el.id === id);
-      newData[idx] = { ...newData[idx], timerOn: !newData[idx].timerOn };
+      if (newData[idx].timer === 0) {
+        newData[idx] = { ...newData[idx], timer: newData[idx].initialTime, timerOn: true };
+      } else {
+        newData[idx] = { ...newData[idx], timerOn: !newData[idx].timerOn };
+      }
+
       return newData;
     });
   };
@@ -101,6 +115,24 @@ function App() {
       const newData = [...prevData];
       const idx = newData.findIndex((el) => el.id === id);
       newData[idx] = { ...newData[idx], timer: newData[idx].initialTime, timerOn: false };
+      return newData;
+    });
+  };
+
+  const toggleEditing = (id) => {
+    setTodoData((prevData) => {
+      const newData = [...prevData];
+      const idx = newData.findIndex((el) => el.id === id);
+      newData[idx] = { ...newData[idx], isEditing: !newData[idx].isEditing };
+      return newData;
+    });
+  };
+
+  const updateTaskText = (id, newText) => {
+    setTodoData((prevData) => {
+      const newData = [...prevData];
+      const idx = newData.findIndex((el) => el.id === id);
+      newData[idx] = { ...newData[idx], text: newText }; // Обновляем текст задачи
       return newData;
     });
   };
@@ -127,6 +159,8 @@ function App() {
         onToggleDone={onToggleDone}
         onToggleTimer={toggleTimer}
         onResetTimer={resetTimer}
+        onToggleEditing={toggleEditing}
+        onUpdateText={updateTaskText}
       />
       <Footer data={filteredData} setFilter={setFilter} deleteDone={deleteDoneTask} />
     </section>

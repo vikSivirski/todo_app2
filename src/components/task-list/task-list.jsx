@@ -19,6 +19,12 @@ function Tasks({
   onResetTimer = () => {
     console.log('Функция не передана');
   },
+  onToggleEditing = () => {
+    console.log('Функция не передана');
+  },
+  onUpdateText = () => {
+    console.log('Функция не передана');
+  },
 }) {
   const items = todos.map((item) => {
     const distanceToNow = formatDistanceToNow(item.createdTime, {
@@ -37,6 +43,10 @@ function Tasks({
         timerOn={item.timerOn}
         onToggleTimer={() => onToggleTimer(item.id)}
         onResetTimer={() => onResetTimer(item.id)}
+        isEditing={item.isEditing}
+        onToggleEditing={() => onToggleEditing(item.id)}
+        onUpdateText={(newText) => onUpdateText(item.id, newText)}
+        initialTime={item.initialTime}
       />
     );
   });

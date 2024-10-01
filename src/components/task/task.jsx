@@ -3,8 +3,23 @@ import PropTypes from 'prop-types';
 
 import './task.css';
 
-function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, timerOn, onToggleTimer, onResetTimer }) {
+function TodoItem({
+  text,
+  onDeleted,
+  onToggleDone,
+  done,
+  createdTime,
+  timer,
+  initialTime,
+  timerOn,
+  onToggleTimer,
+  onResetTimer,
+  isEditing,
+  onToggleEditing,
+  onUpdateText,
+}) {
   const [elapsedTime, setElapsedTime] = useState(timer);
+  const [currentText, setCurrentText] = useState(text);
 
   useEffect(() => {
     setElapsedTime(timer);
@@ -18,8 +33,8 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
         setElapsedTime((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(timerInterval);
-            onResetTimer();
-            return 0;
+            onResetTimer(); // Сбрасываем таймер до исходного значения
+            return initialTime; // Сброс таймера до начального времени
           }
           return prevTime - 1;
         });
@@ -41,6 +56,12 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
     onToggleDone();
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdateText(currentText);
+    onToggleEditing();
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -48,7 +69,7 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
   };
 
   return (
-    <li className={done ? 'completed' : 'active'}>
+    <li className={`${done ? 'completed' : 'active'} ${isEditing ? 'editing' : ''}`}>
       <div className="view">
         <label onClick={toggleTaskDone}>
           <span className="description">{text}</span>
@@ -58,17 +79,18 @@ function TodoItem({ text, onDeleted, onToggleDone, done, createdTime, timer, tim
           </div>
           <span className="created">created {createdTime}</span>
         </label>
-        <button className="icon icon-edit" />
+        <button className="icon icon-edit" onClick={onToggleEditing} />
         <button className="icon icon-destroy" onClick={onDeleted} />
       </div>
-      <input
-        type="text"
-        className="edit"
-        value="Editing task"
-        onChange={() => {
-          console.log('was changed');
-        }}
-      />
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          className="edit"
+          value={currentText}
+          onChange={(e) => setCurrentText(e.target.value)}
+          autoFocus
+        />
+      </form>
     </li>
   );
 }
@@ -77,6 +99,7 @@ TodoItem.propTypes = {
   text: PropTypes.string.isRequired,
   onDeleted: PropTypes.func.isRequired,
   onToggleDone: PropTypes.func.isRequired,
+  initialTime: PropTypes.number.isRequired,
   done: PropTypes.bool,
   createdTime: PropTypes.string,
   timer: PropTypes.number.isRequired,

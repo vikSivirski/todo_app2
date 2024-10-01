@@ -56,11 +56,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 15px 85px 15px 60px;
+  pointer-events: none;
 }
 
 .todo-list li label .created {
   font-size: 10px;
   color: gray;
+  pointer-events: all;
 }
 
 .todo-list li label .description {
@@ -70,6 +72,7 @@
   transition: color 0.4s;
   font-weight: 400;
   color: #4d4d4d;
+  pointer-events: all;
 }
 
 .todo-list li.completed label .description {
@@ -128,11 +131,12 @@
   font-size: 18px;
   width: 18px;
   height: 18px;
+  pointer-events: all;
 }
-
+/* 
 .todo-list li .icon-play {
   font-size: 15px;
-}
+} */
 
 .icon-pause:after {
   content: '⏸';
