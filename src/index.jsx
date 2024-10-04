@@ -132,7 +132,7 @@ function App() {
     setTodoData((prevData) => {
       const newData = [...prevData];
       const idx = newData.findIndex((el) => el.id === id);
-      newData[idx] = { ...newData[idx], text: newText }; // Обновляем текст задачи
+      newData[idx] = { ...newData[idx], text: newText };
       return newData;
     });
   };
