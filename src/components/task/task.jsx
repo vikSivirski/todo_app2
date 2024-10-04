@@ -33,8 +33,8 @@ function TodoItem({
         setElapsedTime((prevTime) => {
           if (prevTime <= 1) {
             clearInterval(timerInterval);
-            onResetTimer(); // Сбрасываем таймер до исходного значения
-            return initialTime; // Сброс таймера до начального времени
+            onResetTimer();
+            return initialTime;
           }
           return prevTime - 1;
         });
